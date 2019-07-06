@@ -11,7 +11,7 @@ class Ship:
 
         # Load the ship image and get its rect.
         self.image = pygame.image.load('images/ship.png')
-        self.image = pygame.transform.scale(self.image, (50, 60))
+        self.image = pygame.transform.scale(self.image, (self.settings.ship_width, self.settings.ship_height))
         self.rect = self.image.get_rect()
         
         # Start each new ship at the bottom center of the screen.
