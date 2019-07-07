@@ -28,6 +28,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
             
     def _check_events(self):
@@ -65,7 +66,7 @@ class AlienInvasion:
             self.ship.moving_left = False
 
     def _update_bullets(self):
-        """Update positions of bullets and delete old bullets."""
+        """Update the positions of bullets and delete old bullets."""
         self.bullets.update()
 
         # Get rid of bullets that have disappeared.
@@ -75,6 +76,24 @@ class AlienInvasion:
 
         # Verify that bullets are being deleted properly.
         #print(len(self.bullets))
+
+    def _check_bullet_alien_collisions(self):
+        """Respond to bullet-alien collisions."""
+
+        # Remove any bullets and aliens that have collided.
+        collisions = pygame.sprite.groupcollide(
+            self.bullets, self.aliens, True, True)
+
+        if not self.aliens:
+            # Destroy existing bullets and creat a new fleet.
+            self.bullets.empty()
+            self._create_fleet()
+
+    def _update_aliens(self):
+        """Check if the fleet is at an edge, 
+            then update the positions of all aliens in the fleet."""
+        self._check_fleet_edges()
+        self.aliens.update()
 
     def _create_fleet(self):
         """Create the fleet of aliens."""
@@ -102,6 +121,19 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
+
+    def _check_fleet_edges(self):
+        """Respond appropriately if an alien has hit an edge."""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        """Drop the entire fleet and change fleet's direction."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _update_screen(self):
         """Update images on the screen, and flip to new screen."""
