@@ -10,6 +10,7 @@ class Settings:
 
         # Ship settings
         self.ship_speed = 1.5
+        self.ship_limit = 3
         self.ship_width = 50
         self.ship_height = 60
 
