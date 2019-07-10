@@ -72,6 +72,7 @@ class AlienInvasion:
         self.stats.game_active = True
         self.sb.prep_score()
         self.sb.prep_level()
+        self.sb.prep_ships()
 
         # Get rid of any remaining aliens and bullets.
         self.aliens.empty()
@@ -163,6 +164,7 @@ class AlienInvasion:
         if self.stats.ship_left > 0:
             # Decrement ship left.
             self.stats.ship_left -= 1
+            self.sb.prep_ships()
 
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
@@ -193,11 +195,11 @@ class AlienInvasion:
         alien = Alien(self)
         alien_width, alien_height = alien.rect.size
         available_space_x = self.settings.screen_width - 2 * alien_width
-        alien_number_x = available_space_x // (2 * alien_width)
+        alien_number_x = int((available_space_x // alien_width) // 1.2)
 
         ship_height = self.ship.rect.height
         available_space_y = (self.settings.screen_height - 
-            (3 * alien_height) - ship_height) 
+            (4 * alien_height) - ship_height) 
         number_rows = available_space_y // (2 * alien_height)
         
         # Create rows of aliens
@@ -209,9 +211,9 @@ class AlienInvasion:
         """Create an alien and place it in the row."""
         alien = Alien(self)
         alien_width, alien_height = alien.rect.size
-        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.x = alien_width + 1.2 * alien_width * alien_number
         alien.rect.x = alien.x
-        alien.rect.y = alien_height + 2 * alien_height * row_number
+        alien.rect.y = 1.5 * alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
 
     def _check_fleet_edges(self):
